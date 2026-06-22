@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      freelancer_profiles: {
+        Row: {
+          availability: Database["public"]["Enums"]["availability_status"]
+          avatar_url: string | null
+          bio: string
+          created_at: string
+          currency: string
+          full_name: string
+          hourly_rate_max: number | null
+          hourly_rate_min: number | null
+          id: string
+          job_title: string
+          portfolio_filename: string | null
+          portfolio_url: string | null
+          published: boolean
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          availability?: Database["public"]["Enums"]["availability_status"]
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          currency?: string
+          full_name?: string
+          hourly_rate_max?: number | null
+          hourly_rate_min?: number | null
+          id: string
+          job_title?: string
+          portfolio_filename?: string | null
+          portfolio_url?: string | null
+          published?: boolean
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          availability?: Database["public"]["Enums"]["availability_status"]
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          currency?: string
+          full_name?: string
+          hourly_rate_max?: number | null
+          hourly_rate_min?: number | null
+          id?: string
+          job_title?: string
+          portfolio_filename?: string | null
+          portfolio_url?: string | null
+          published?: boolean
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +76,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      availability_status: "available_now" | "available_soon" | "not_available"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +203,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      availability_status: ["available_now", "available_soon", "not_available"],
+    },
   },
 } as const
