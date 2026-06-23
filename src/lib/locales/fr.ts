@@ -126,6 +126,8 @@ export const fr = {
       extractionImageFallback: "Nouvelle tentative : lecture des pages rendues en images.",
       visualFailed: "Lecture visuelle du PDF impossible : {{message}}",
       uploadExtracted: "Dossier de compétences uploadé · {{count}} compétences extraites",
+      uploadExtractedReference:
+        "Dossier de compétences uploadé · {{count}} compétences reconnues via le référentiel",
       uploadExtractedVisual:
         "Dossier de compétences uploadé · {{count}} compétences extraites par lecture visuelle",
       uploadNoTags:

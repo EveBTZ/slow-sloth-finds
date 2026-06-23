@@ -126,6 +126,7 @@ export const en = {
       extractionImageFallback: "Trying again: reading rendered pages as images.",
       visualFailed: "Visual PDF reading failed: {{message}}",
       uploadExtracted: "Skills dossier uploaded · {{count}} skills extracted",
+      uploadExtractedReference: "Skills dossier uploaded · {{count}} skills matched from the reference list",
       uploadExtractedVisual: "Skills dossier uploaded · {{count}} skills extracted by visual reading",
       uploadNoTags:
         "Skills dossier uploaded · no skills were extracted automatically. You can add them manually.",
