@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { extractTagsFromText } from "@/lib/ai.functions";
 import { useServerFn } from "@tanstack/react-start";
-import { getSignedFileUrl } from "@/lib/storage";
+import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -415,7 +415,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   useEffect(() => {
     let active = true;
     if (profile.portfolio_url) {
-      getSignedFileUrl("portfolios", profile.portfolio_url, 60 * 60).then((u) => {
+      getOwnerSignedFileUrl("portfolios", profile.portfolio_url, 60 * 60).then((u) => {
         if (active) setPortfolioLink(u);
       });
     } else {
