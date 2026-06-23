@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Header } from "@/components/Header";
@@ -24,6 +24,61 @@ interface PublicProfile {
 }
 
 export const Route = createFileRoute("/freelancer/$id")({
+  loader: async ({ params }) => {
+    const { data, error } = await supabase
+      .from("freelancer_profiles")
+      .select(
+        "id, full_name, job_title, bio, availability, tags, hourly_rate_min, hourly_rate_max, currency, avatar_url, portfolio_url, portfolio_filename, published",
+      )
+      .eq("id", params.id)
+      .eq("published", true)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) throw notFound();
+    return data as unknown as PublicProfile;
+  },
+  head: ({ params, loaderData }) => {
+    const url = `https://slow-sloth-finds.lovable.app/freelancer/${params.id}`;
+    if (!loaderData) {
+      return {
+        meta: [
+          { title: "Profil freelance · Slow Worker" },
+          { property: "og:url", content: url },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    }
+    const title = `${loaderData.full_name} — ${loaderData.job_title} · Slow Worker`;
+    const desc = (loaderData.bio || `${loaderData.job_title} freelance sur Slow Worker.`).slice(0, 155);
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: {
+              "@type": "Person",
+              name: loaderData.full_name,
+              jobTitle: loaderData.job_title,
+              description: loaderData.bio || undefined,
+              knowsAbout: loaderData.tags,
+              url,
+            },
+          }),
+        },
+      ],
+    };
+  },
   component: FreelancerProfilePage,
   errorComponent: ({ error }) => (
     <div className="flex min-h-screen items-center justify-center text-center">
@@ -38,52 +93,27 @@ export const Route = createFileRoute("/freelancer/$id")({
 });
 
 function FreelancerProfilePage() {
-  const { id } = Route.useParams();
+  const profile = Route.useLoaderData() as PublicProfile | undefined;
   const { t } = useTranslation();
-  const [profile, setProfile] = useState<PublicProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    supabase
-      .from("freelancer_profiles")
-      .select(
-        "id, full_name, job_title, bio, availability, tags, hourly_rate_min, hourly_rate_max, currency, avatar_url, portfolio_url, portfolio_filename, published",
-      )
-      .eq("id", id)
-      .eq("published", true)
-      .maybeSingle()
-      .then(async ({ data }) => {
-        if (!active) return;
-        setProfile(data as unknown as PublicProfile);
-        setLoading(false);
-        if (data?.avatar_url) {
-          const u = await getSignedFileUrl("avatars", data.avatar_url);
-          if (active) setAvatarUrl(u);
-        }
-        if (data?.portfolio_url) {
-          const u = await getSignedFileUrl("portfolios", data.portfolio_url, 60 * 60 * 24);
-          if (active) setPortfolioUrl(u);
-        }
-      });
+    (async () => {
+      if (profile?.avatar_url) {
+        const u = await getSignedFileUrl("avatars", profile.avatar_url);
+        if (active) setAvatarUrl(u);
+      }
+      if (profile?.portfolio_url) {
+        const u = await getSignedFileUrl("portfolios", profile.portfolio_url, 60 * 60 * 24);
+        if (active) setPortfolioUrl(u);
+      }
+    })();
     return () => {
       active = false;
     };
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <div className="mx-auto w-full max-w-4xl flex-1 animate-pulse px-4 py-16">
-          <div className="h-48 rounded-3xl bg-card" />
-        </div>
-      </div>
-    );
-  }
+  }, [profile?.avatar_url, profile?.portfolio_url]);
 
   if (!profile) {
     return (

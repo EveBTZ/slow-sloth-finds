@@ -7,21 +7,46 @@ import { SlothIcon } from "@/components/Logo";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Slow Worker — Le freelance, sans la course" },
+      { title: "Slow Worker — Marketplace de freelances bilingue FR/EN" },
       {
         name: "description",
         content:
           "Marketplace de freelances qualifiés. Profils riches, dispos en temps réel, sans inscription côté entreprise.",
       },
-      { property: "og:title", content: "Slow Worker" },
+      {
+        property: "og:title",
+        content: "Slow Worker — Marketplace de freelances bilingue FR/EN",
+      },
       {
         property: "og:description",
-        content: "Marketplace de freelances calmes & qualifiés.",
+        content: "Marketplace de freelances calmes & qualifiés. Bilingue FR / EN.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://slow-sloth-finds.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://slow-sloth-finds.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Slow Worker",
+          url: "https://slow-sloth-finds.lovable.app/",
+          inLanguage: ["fr", "en"],
+          potentialAction: {
+            "@type": "SearchAction",
+            target:
+              "https://slow-sloth-finds.lovable.app/browse?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
       },
     ],
   }),
   component: Index,
 });
+
 
 function Index() {
   const { t } = useTranslation();

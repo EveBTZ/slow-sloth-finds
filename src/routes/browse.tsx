@@ -14,12 +14,35 @@ export const Route = createFileRoute("/browse")({
       { title: "Trouver un freelance · Slow Worker" },
       {
         name: "description",
-        content: "Parcourez la meute de freelances Slow Worker. Filtrez par compétence, disponibilité, spécialité.",
+        content:
+          "Parcourez la meute de freelances Slow Worker. Filtrez par compétence, disponibilité, spécialité.",
+      },
+      { property: "og:title", content: "Trouver un freelance · Slow Worker" },
+      {
+        property: "og:description",
+        content: "Annuaire de freelances bilingues FR/EN. Filtrez par skill et dispo.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://slow-sloth-finds.lovable.app/browse" },
+    ],
+    links: [{ rel: "canonical", href: "https://slow-sloth-finds.lovable.app/browse" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Annuaire des freelances Slow Worker",
+          url: "https://slow-sloth-finds.lovable.app/browse",
+          about: "Freelance directory",
+          inLanguage: ["fr", "en"],
+        }),
       },
     ],
   }),
   component: BrowsePage,
 });
+
 
 function BrowsePage() {
   const { t } = useTranslation();
@@ -87,10 +110,12 @@ function BrowsePage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t("directory.searchPlaceholder")}
+              aria-label={t("directory.searchPlaceholder")}
               className="w-full rounded-2xl bg-transparent py-2.5 pl-11 pr-4 text-sm font-medium outline-none placeholder:text-muted-foreground"
             />
           </div>
           <div className="flex gap-2 px-1 sm:px-0">
+
             <AvailFilter value={availFilter} onChange={setAvailFilter} />
           </div>
         </div>
@@ -98,9 +123,10 @@ function BrowsePage() {
         <div className="grid gap-8 lg:grid-cols-[14rem_1fr]">
           <aside className="space-y-6">
             <div>
-              <h3 className="mb-3 font-display text-sm font-extrabold uppercase tracking-wider text-secondary">
+              <h2 className="mb-3 font-display text-sm font-extrabold uppercase tracking-wider text-secondary">
                 {t("directory.allTags")}
-              </h3>
+              </h2>
+
               <div className="flex flex-wrap gap-1.5">
                 {allTags.length === 0 && (
                   <span className="text-xs text-muted-foreground">—</span>

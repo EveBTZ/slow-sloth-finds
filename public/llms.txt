@@ -1,0 +1,10 @@
+# Slow Worker
+
+> Bilingual (FR/EN) marketplace of calm, skilled freelancers. Find the right profile at the right pace.
+
+Slow Worker connects companies with freelancers across branding, UX, and development. Companies browse without signing up; freelancers maintain a public profile with skills, availability, and portfolio.
+
+## Pages
+
+- [Accueil / Home](/): Landing page introducing Slow Worker.
+- [Trouver un freelance / Browse freelancers](/browse): Searchable directory filtered by skill and availability.
