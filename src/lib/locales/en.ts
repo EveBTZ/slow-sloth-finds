@@ -123,6 +123,7 @@ export const en = {
       extractionTextWeak: "PDF text is hard to use: visual dossier reading started.",
       extractionTextFailed: "Text extraction unavailable: visual dossier reading started.",
       extractionTextEmpty: "No skills found in the text: visual dossier reading started.",
+      extractionImageFallback: "Trying again: reading rendered pages as images.",
       visualFailed: "Visual PDF reading failed: {{message}}",
       uploadExtracted: "Skills dossier uploaded · {{count}} skills extracted",
       uploadExtractedVisual: "Skills dossier uploaded · {{count}} skills extracted by visual reading",
