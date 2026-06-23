@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { AvailabilityBadge, type Availability } from "@/components/AvailabilityBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { extractTagsFromText } from "@/lib/ai.functions";
+import { extractTagsFromPdf, extractTagsFromText } from "@/lib/ai.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
@@ -306,12 +306,24 @@ function ProfileTab({ profile, onSaved }: { profile: Profile; onSaved: () => voi
   );
 }
 
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    const chunk = bytes.subarray(offset, offset + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+  return btoa(binary);
+}
+
 function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () => void }) {
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const extractFn = useServerFn(extractTagsFromText);
+  const extractPdfFn = useServerFn(extractTagsFromPdf);
   const [newTag, setNewTag] = useState("");
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -338,22 +350,55 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
         await supabase.storage.from("portfolios").remove([profile.portfolio_url]);
       }
 
-      // Extract text client-side using unpdf
+      // Extract selectable PDF text first, then fall back to visual PDF analysis.
       setExtracting(true);
-      const { extractText, getDocumentProxy } = await import("unpdf");
-      const buf = new Uint8Array(await file.arrayBuffer());
-      const pdf = await getDocumentProxy(buf);
-      const { text } = await extractText(pdf, { mergePages: true });
-      const cleaned = (Array.isArray(text) ? text.join("\n") : text).trim();
+      const arrayBuffer = await file.arrayBuffer();
+      let cleaned = "";
+      let textExtractionError: string | null = null;
+      try {
+        const { extractText, getDocumentProxy } = await import("unpdf");
+        const buf = new Uint8Array(arrayBuffer);
+        const pdf = await getDocumentProxy(buf);
+        const { text } = await extractText(pdf, { mergePages: true });
+        cleaned = (Array.isArray(text) ? text.join("\n") : text).trim();
+      } catch (error: any) {
+        console.error(error);
+        textExtractionError = error?.message ?? "unknown";
+      }
 
       let tags: string[] = [];
+      let extractionSource: "text" | "visual" | "none" = "none";
       if (cleaned.length > 50) {
         try {
           const out = await extractFn({ data: { text: cleaned } });
           tags = out.tags;
+          if (tags.length > 0) extractionSource = "text";
         } catch (e: any) {
           console.error(e);
-          toast.error("AI extraction failed: " + (e?.message ?? "unknown"));
+          textExtractionError = e?.message ?? "unknown";
+        }
+      }
+
+      if (tags.length === 0) {
+        if (cleaned.length <= 50) {
+          toast.info("Texte PDF peu exploitable : lecture visuelle du dossier lancée.");
+        } else if (textExtractionError) {
+          toast.info("Extraction texte indisponible : lecture visuelle du dossier lancée.");
+        } else {
+          toast.info("Aucune compétence trouvée dans le texte : lecture visuelle du dossier lancée.");
+        }
+        try {
+          const out = await extractPdfFn({
+            data: {
+              filename: file.name,
+              fileData: `data:application/pdf;base64,${arrayBufferToBase64(arrayBuffer)}`,
+            },
+          });
+          tags = out.tags;
+          if (tags.length > 0) extractionSource = "visual";
+        } catch (e: any) {
+          console.error(e);
+          toast.error("Lecture visuelle du PDF impossible : " + (e?.message ?? "erreur inconnue"));
         }
       }
 
@@ -369,7 +414,14 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
         .eq("id", profile.id);
       if (updErr) throw updErr;
 
-      toast.success(`Dossier de compétences uploadé · ${tags.length} compétences extraites`);
+      if (tags.length > 0) {
+        const mode = extractionSource === "visual" ? " par lecture visuelle" : "";
+        toast.success(`Dossier de compétences uploadé · ${tags.length} compétences extraites${mode}`);
+      } else {
+        toast.warning(
+          "Dossier de compétences uploadé · aucune compétence extraite automatiquement. Vous pouvez les ajouter manuellement."
+        );
+      }
       onChange();
     } catch (e: any) {
       toast.error(e?.message ?? t("errors.generic"));
