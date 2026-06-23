@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { extractTagsFromImages, extractTagsFromPdf, extractTagsFromText } from "@/lib/ai.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { getOwnerSignedFileUrl } from "@/lib/storage";
+import { extractKnownSkillTags, mergeSkillTags } from "@/lib/skill-tags";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -393,11 +394,17 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
       }
 
       let tags: string[] = [];
-      let extractionSource: "text" | "visual" | "images" | "none" = "none";
+      let extractionSource: "text" | "visual" | "images" | "reference" | "none" = "none";
+      const referenceTags = cleaned.length > 0 ? extractKnownSkillTags(cleaned) : [];
+      if (referenceTags.length > 0) {
+        tags = referenceTags;
+        extractionSource = "reference";
+      }
+
       if (cleaned.length > 50) {
         try {
-          const out = await extractFn({ data: { text: cleaned } });
-          tags = out.tags;
+          const out = await extractFn({ data: { text: cleaned.slice(0, 80_000) } });
+          tags = mergeSkillTags([...tags, ...out.tags], 30);
           if (tags.length > 0) extractionSource = "text";
         } catch (e: any) {
           console.error(e);
