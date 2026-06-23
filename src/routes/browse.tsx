@@ -110,10 +110,12 @@ function BrowsePage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t("directory.searchPlaceholder")}
+              aria-label={t("directory.searchPlaceholder")}
               className="w-full rounded-2xl bg-transparent py-2.5 pl-11 pr-4 text-sm font-medium outline-none placeholder:text-muted-foreground"
             />
           </div>
           <div className="flex gap-2 px-1 sm:px-0">
+
             <AvailFilter value={availFilter} onChange={setAvailFilter} />
           </div>
         </div>
