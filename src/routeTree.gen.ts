@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -16,6 +17,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FreelancerIdRouteImport } from './routes/freelancer.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/freelancer/$id': typeof FreelancerIdRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/freelancer/$id': typeof FreelancerIdRoute
 }
@@ -66,20 +74,34 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/freelancer/$id': typeof FreelancerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/browse' | '/dashboard' | '/freelancer/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/browse'
+    | '/sitemap.xml'
+    | '/dashboard'
+    | '/freelancer/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/browse' | '/dashboard' | '/freelancer/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/browse'
+    | '/sitemap.xml'
+    | '/dashboard'
+    | '/freelancer/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/browse'
+    | '/sitemap.xml'
     | '/_authenticated/dashboard'
     | '/freelancer/$id'
   fileRoutesById: FileRoutesById
@@ -89,11 +111,19 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   FreelancerIdRoute: typeof FreelancerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/browse': {
       id: '/browse'
       path: '/browse'
@@ -155,6 +185,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   FreelancerIdRoute: FreelancerIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -93,7 +93,7 @@ export const Route = createFileRoute("/freelancer/$id")({
 });
 
 function FreelancerProfilePage() {
-  const profile = Route.useLoaderData();
+  const profile = Route.useLoaderData() as PublicProfile | undefined;
   const { t } = useTranslation();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState<string | null>(null);
