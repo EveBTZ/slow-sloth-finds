@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { AvailabilityBadge, type Availability } from "@/components/AvailabilityBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { extractTagsFromPdf, extractTagsFromText } from "@/lib/ai.functions";
+import { extractTagsFromImages, extractTagsFromPdf, extractTagsFromText } from "@/lib/ai.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
@@ -317,6 +317,31 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   return btoa(binary);
 }
 
+async function renderPdfPagesAsImages(arrayBuffer: ArrayBuffer, maxPages = 4) {
+  const { getDocumentProxy } = await import("unpdf");
+  const pdf = (await getDocumentProxy(new Uint8Array(arrayBuffer.slice(0)))) as any;
+  const pageCount = Math.min(Number(pdf.numPages ?? 0), maxPages);
+  const images: string[] = [];
+
+  for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const baseViewport = page.getViewport({ scale: 1 });
+    const scale = Math.min(1.6, 1200 / baseViewport.width);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (!context) continue;
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    await page.render({ canvasContext: context, viewport }).promise;
+    images.push(canvas.toDataURL("image/jpeg", 0.72));
+    page.cleanup?.();
+  }
+
+  pdf.cleanup?.();
+  return images;
+}
+
 function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () => void }) {
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
@@ -324,6 +349,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   const inputRef = useRef<HTMLInputElement>(null);
   const extractFn = useServerFn(extractTagsFromText);
   const extractPdfFn = useServerFn(extractTagsFromPdf);
+  const extractImagesFn = useServerFn(extractTagsFromImages);
   const [newTag, setNewTag] = useState("");
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -367,7 +393,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
       }
 
       let tags: string[] = [];
-      let extractionSource: "text" | "visual" | "none" = "none";
+      let extractionSource: "text" | "visual" | "images" | "none" = "none";
       if (cleaned.length > 50) {
         try {
           const out = await extractFn({ data: { text: cleaned } });
@@ -404,6 +430,28 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
         }
       }
 
+      if (tags.length === 0) {
+        try {
+          toast.info(t("dashboard.portfolio.extractionImageFallback"));
+          const images = await renderPdfPagesAsImages(arrayBuffer);
+          if (images.length > 0) {
+            const out = await extractImagesFn({
+              data: {
+                filename: file.name,
+                images,
+              },
+            });
+            tags = out.tags;
+            if (tags.length > 0) extractionSource = "images";
+          }
+        } catch (e: any) {
+          console.error(e);
+          toast.error(
+            t("dashboard.portfolio.visualFailed", { message: e?.message ?? t("errors.generic") })
+          );
+        }
+      }
+
       const merged = Array.from(new Set([...(profile.tags ?? []), ...tags]));
 
       const { error: updErr } = await supabase
@@ -419,7 +467,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
       if (tags.length > 0) {
         toast.success(
           t(
-            extractionSource === "visual"
+            extractionSource === "visual" || extractionSource === "images"
               ? "dashboard.portfolio.uploadExtractedVisual"
               : "dashboard.portfolio.uploadExtracted",
             { count: tags.length }
