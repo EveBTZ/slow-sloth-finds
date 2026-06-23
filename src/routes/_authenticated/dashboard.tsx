@@ -369,7 +369,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
         .eq("id", profile.id);
       if (updErr) throw updErr;
 
-      toast.success(`Portfolio uploaded · ${tags.length} skills extracted`);
+      toast.success(`Dossier de compétences uploadé · ${tags.length} compétences extraites`);
       onChange();
     } catch (e: any) {
       toast.error(e?.message ?? t("errors.generic"));

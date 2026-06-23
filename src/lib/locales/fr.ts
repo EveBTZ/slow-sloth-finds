@@ -21,7 +21,7 @@ export const fr = {
     items: [
       {
         title: "Profils riches & honnêtes",
-        body: "Chaque freelance publie un portfolio PDF, analysé par notre IA pour extraire compétences, outils et secteurs.",
+        body: "Chaque freelance publie un dossier de compétences PDF, analysé par notre IA pour extraire compétences, outils et secteurs.",
       },
       {
         title: "Dispos en temps réel",
@@ -65,7 +65,7 @@ export const fr = {
     back: "Retour à la liste",
     about: "À propos",
     skills: "Compétences & outils",
-    portfolio: "Voir le portfolio (PDF)",
+    portfolio: "Voir le dossier de compétences (PDF)",
     contact: "Contacter",
     contactHint: "Ce freelance n'a pas encore renseigné de contact public.",
     notFound: "Profil introuvable",
@@ -89,8 +89,9 @@ export const fr = {
   },
   dashboard: {
     title: "Mon espace freelance",
-    subtitle: "Gérez votre profil public et votre portfolio.",
-    tabs: { profile: "Profil", portfolio: "Portfolio", preview: "Aperçu" },
+    subtitle: "Gérez votre profil public et votre dossier de compétences.",
+    tabs: { profile: "Profil", portfolio: "Dossier de compétences", preview: "Aperçu" },
+
     save: "Enregistrer",
     saved: "Profil enregistré",
     publish: "Publier mon profil",
@@ -109,23 +110,24 @@ export const fr = {
       avatar: "Avatar (optionnel)",
     },
     portfolio: {
-      title: "Portfolio PDF",
-      subtitle: "Uploadez votre portfolio (8–10 pages). Notre IA extraira vos compétences automatiquement.",
+      title: "Dossier de compétences (PDF)",
+      subtitle: "Uploadez votre dossier de compétences (8–10 pages). Notre IA extraira vos compétences automatiquement.",
       upload: "Choisir un PDF",
       uploading: "Envoi en cours…",
       extracting: "Analyse IA en cours… Le paresseux travaille (lentement).",
       currentFile: "Fichier actuel :",
       replace: "Remplacer",
       remove: "Supprimer",
-      noFile: "Aucun portfolio chargé.",
+      noFile: "Aucun dossier de compétences chargé.",
       maxSize: "PDF, 10 Mo max.",
     },
+
     tags: {
       title: "Vos compétences",
       subtitle: "Extraites par l'IA. Cliquez pour retirer, ou ajoutez les vôtres.",
       add: "Ajouter une compétence",
       placeholder: "ex: Figma, Branding, SaaS…",
-      empty: "Aucune compétence pour l'instant. Uploadez un portfolio pour les extraire.",
+      empty: "Aucune compétence pour l'instant. Uploadez un dossier de compétences pour les extraire.",
     },
   },
   footer: { rights: "Tous droits réservés.", made: "Fait avec lenteur ✨" },
