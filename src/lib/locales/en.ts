@@ -120,6 +120,14 @@ export const en = {
       remove: "Remove",
       noFile: "No skills dossier uploaded yet.",
       maxSize: "PDF, 10 MB max.",
+      extractionTextWeak: "PDF text is hard to use: visual dossier reading started.",
+      extractionTextFailed: "Text extraction unavailable: visual dossier reading started.",
+      extractionTextEmpty: "No skills found in the text: visual dossier reading started.",
+      visualFailed: "Visual PDF reading failed: {{message}}",
+      uploadExtracted: "Skills dossier uploaded · {{count}} skills extracted",
+      uploadExtractedVisual: "Skills dossier uploaded · {{count}} skills extracted by visual reading",
+      uploadNoTags:
+        "Skills dossier uploaded · no skills were extracted automatically. You can add them manually.",
     },
 
     tags: {

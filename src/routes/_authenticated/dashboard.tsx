@@ -381,11 +381,11 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
 
       if (tags.length === 0) {
         if (cleaned.length <= 50) {
-          toast.info("Texte PDF peu exploitable : lecture visuelle du dossier lancée.");
+          toast.info(t("dashboard.portfolio.extractionTextWeak"));
         } else if (textExtractionError) {
-          toast.info("Extraction texte indisponible : lecture visuelle du dossier lancée.");
+          toast.info(t("dashboard.portfolio.extractionTextFailed"));
         } else {
-          toast.info("Aucune compétence trouvée dans le texte : lecture visuelle du dossier lancée.");
+          toast.info(t("dashboard.portfolio.extractionTextEmpty"));
         }
         try {
           const out = await extractPdfFn({
@@ -398,7 +398,9 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
           if (tags.length > 0) extractionSource = "visual";
         } catch (e: any) {
           console.error(e);
-          toast.error("Lecture visuelle du PDF impossible : " + (e?.message ?? "erreur inconnue"));
+          toast.error(
+            t("dashboard.portfolio.visualFailed", { message: e?.message ?? t("errors.generic") })
+          );
         }
       }
 
@@ -415,12 +417,16 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
       if (updErr) throw updErr;
 
       if (tags.length > 0) {
-        const mode = extractionSource === "visual" ? " par lecture visuelle" : "";
-        toast.success(`Dossier de compétences uploadé · ${tags.length} compétences extraites${mode}`);
-      } else {
-        toast.warning(
-          "Dossier de compétences uploadé · aucune compétence extraite automatiquement. Vous pouvez les ajouter manuellement."
+        toast.success(
+          t(
+            extractionSource === "visual"
+              ? "dashboard.portfolio.uploadExtractedVisual"
+              : "dashboard.portfolio.uploadExtracted",
+            { count: tags.length }
+          )
         );
+      } else {
+        toast.warning(t("dashboard.portfolio.uploadNoTags"));
       }
       onChange();
     } catch (e: any) {

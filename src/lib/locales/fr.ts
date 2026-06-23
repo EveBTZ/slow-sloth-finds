@@ -120,6 +120,15 @@ export const fr = {
       remove: "Supprimer",
       noFile: "Aucun dossier de compétences chargé.",
       maxSize: "PDF, 10 Mo max.",
+      extractionTextWeak: "Texte PDF peu exploitable : lecture visuelle du dossier lancée.",
+      extractionTextFailed: "Extraction texte indisponible : lecture visuelle du dossier lancée.",
+      extractionTextEmpty: "Aucune compétence trouvée dans le texte : lecture visuelle du dossier lancée.",
+      visualFailed: "Lecture visuelle du PDF impossible : {{message}}",
+      uploadExtracted: "Dossier de compétences uploadé · {{count}} compétences extraites",
+      uploadExtractedVisual:
+        "Dossier de compétences uploadé · {{count}} compétences extraites par lecture visuelle",
+      uploadNoTags:
+        "Dossier de compétences uploadé · aucune compétence extraite automatiquement. Vous pouvez les ajouter manuellement.",
     },
 
     tags: {
