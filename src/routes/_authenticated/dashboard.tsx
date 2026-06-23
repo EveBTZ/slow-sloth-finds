@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { extractTagsFromText } from "@/lib/ai.functions";
 import { useServerFn } from "@tanstack/react-start";
-import { getSignedFileUrl } from "@/lib/storage";
+import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
