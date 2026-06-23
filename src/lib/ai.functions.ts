@@ -20,6 +20,22 @@ const PdfInputSchema = z.object({
     }),
 });
 
+const ImageInputSchema = z.object({
+  filename: z.string().min(1).max(180),
+  images: z
+    .array(
+      z
+        .string()
+        .min("data:image/jpeg;base64,".length + 100)
+        .max(2_500_000)
+        .refine((value) => value.startsWith("data:image/jpeg;base64,"), {
+          message: "Invalid image data",
+        })
+    )
+    .min(1)
+    .max(6),
+});
+
 const TagsOutputSchema = z.object({
   tags: z
     .array(z.string().min(1).max(40))
@@ -51,6 +67,68 @@ function parseTagsJson(content: string) {
   if (start === -1 || end === -1 || end <= start) return [];
   const parsed = JSON.parse(withoutFence.slice(start, end + 1)) as { tags?: unknown };
   return normalizeTags(parsed.tags);
+}
+
+function readMessageContent(content: unknown) {
+  return Array.isArray(content)
+    ? content
+        .map((part) =>
+          part && typeof part === "object" && "text" in part ? String(part.text ?? "") : ""
+        )
+        .join("\n")
+    : typeof content === "string"
+      ? content
+      : "";
+}
+
+async function extractTagsFromVisionBlocks(
+  key: string,
+  text: string,
+  blocks: Array<Record<string, unknown>>,
+  sdk: string
+) {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Lovable-API-Key": key,
+      "X-Lovable-AIG-SDK": sdk,
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      temperature: 0.1,
+      max_tokens: 900,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You extract concise professional skill tags from a freelancer skills dossier. Read visual pages, scanned text, and layouts. Return only a JSON object with a tags array. Tags must be concrete skills, tools, technologies, methodologies, languages, or business sectors. Avoid duplicates and generic words.",
+        },
+        {
+          role: "user",
+          content: [{ type: "text", text }, ...blocks],
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    console.error("Visual tag extraction failed", response.status, details.slice(0, 1200));
+    throw new Error("L'analyse visuelle du dossier a échoué");
+  }
+
+  const payload = (await response.json()) as {
+    choices?: Array<{ message?: { content?: unknown } }>;
+  };
+  const content = payload.choices?.[0]?.message?.content;
+
+  try {
+    return parseTagsJson(readMessageContent(content));
+  } catch (error) {
+    console.error("Visual tag JSON parsing failed", error, readMessageContent(content).slice(0, 1200));
+    return [];
+  }
 }
 
 export const extractTagsFromText = createServerFn({ method: "POST" })
@@ -86,69 +164,37 @@ export const extractTagsFromPdf = createServerFn({ method: "POST" })
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": key,
-        "X-Lovable-AIG-SDK": "direct-pdf-tags",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        temperature: 0.1,
-        max_tokens: 700,
-        messages: [
-          {
-            role: "system",
-            content:
-              "You extract concise professional skill tags from a freelancer skills dossier PDF. Read visual pages, scanned text, and layouts. Return only a JSON object with a tags array. Tags must be concrete skills, tools, technologies, methodologies, languages, or business sectors. Avoid duplicates and generic words.",
+    const tags = await extractTagsFromVisionBlocks(
+      key,
+      'Analyze this PDF visually and extract 8-20 useful short tags. Return exactly: {"tags":["Tag"]}. Return an empty tags array if no professional skills are visible.',
+      [
+        {
+          type: "file",
+          file: {
+            filename: data.filename,
+            file_data: data.fileData,
           },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: 'Analyze this PDF visually and extract 8-20 useful short tags. Return exactly: {"tags":["Tag"]}. Return an empty tags array if no professional skills are visible.',
-              },
-              {
-                type: "file",
-                file: {
-                  filename: data.filename,
-                  file_data: data.fileData,
-                },
-              },
-            ],
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const details = await response.text();
-      console.error("PDF visual tag extraction failed", response.status, details.slice(0, 1200));
-      throw new Error("L'analyse visuelle du PDF a échoué");
-    }
-
-    const payload = (await response.json()) as {
-      choices?: Array<{ message?: { content?: unknown } }>;
-    };
-    const content = payload.choices?.[0]?.message?.content;
-    const text = Array.isArray(content)
-      ? content
-          .map((part) =>
-            part && typeof part === "object" && "text" in part ? String(part.text ?? "") : ""
-          )
-          .join("\n")
-      : typeof content === "string"
-        ? content
-        : "";
-
-    let tags: string[] = [];
-    try {
-      tags = parseTagsJson(text);
-    } catch (error) {
-      console.error("PDF tag JSON parsing failed", error, text.slice(0, 1200));
-    }
+        },
+      ],
+      "direct-pdf-tags"
+    );
 
     return { tags, source: "visual" as const };
+  });
+
+export const extractTagsFromImages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => ImageInputSchema.parse(input))
+  .handler(async ({ data }) => {
+    const key = process.env.LOVABLE_API_KEY;
+    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+
+    const tags = await extractTagsFromVisionBlocks(
+      key,
+      `Analyze these rendered pages from the PDF dossier "${data.filename}" and extract 8-20 useful short professional skill tags. Return exactly: {"tags":["Tag"]}.`,
+      data.images.map((url) => ({ type: "image_url", image_url: { url } })),
+      "rendered-page-tags"
+    );
+
+    return { tags, source: "images" as const };
   });

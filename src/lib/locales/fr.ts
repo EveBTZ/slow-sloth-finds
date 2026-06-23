@@ -123,6 +123,7 @@ export const fr = {
       extractionTextWeak: "Texte PDF peu exploitable : lecture visuelle du dossier lancée.",
       extractionTextFailed: "Extraction texte indisponible : lecture visuelle du dossier lancée.",
       extractionTextEmpty: "Aucune compétence trouvée dans le texte : lecture visuelle du dossier lancée.",
+      extractionImageFallback: "Nouvelle tentative : lecture des pages rendues en images.",
       visualFailed: "Lecture visuelle du PDF impossible : {{message}}",
       uploadExtracted: "Dossier de compétences uploadé · {{count}} compétences extraites",
       uploadExtractedVisual:
