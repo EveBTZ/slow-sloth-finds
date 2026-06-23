@@ -14,12 +14,35 @@ export const Route = createFileRoute("/browse")({
       { title: "Trouver un freelance · Slow Worker" },
       {
         name: "description",
-        content: "Parcourez la meute de freelances Slow Worker. Filtrez par compétence, disponibilité, spécialité.",
+        content:
+          "Parcourez la meute de freelances Slow Worker. Filtrez par compétence, disponibilité, spécialité.",
+      },
+      { property: "og:title", content: "Trouver un freelance · Slow Worker" },
+      {
+        property: "og:description",
+        content: "Annuaire de freelances bilingues FR/EN. Filtrez par skill et dispo.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://slow-sloth-finds.lovable.app/browse" },
+    ],
+    links: [{ rel: "canonical", href: "https://slow-sloth-finds.lovable.app/browse" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Annuaire des freelances Slow Worker",
+          url: "https://slow-sloth-finds.lovable.app/browse",
+          about: "Freelance directory",
+          inLanguage: ["fr", "en"],
+        }),
       },
     ],
   }),
   component: BrowsePage,
 });
+
 
 function BrowsePage() {
   const { t } = useTranslation();

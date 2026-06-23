@@ -9,10 +9,27 @@ import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-    meta: [{ title: "Connexion · Slow Worker" }],
+    meta: [
+      { title: "Connexion · Slow Worker" },
+      {
+        name: "description",
+        content:
+          "Connectez-vous ou créez votre profil freelance Slow Worker. Sign in or create your Slow Worker freelancer profile.",
+      },
+      { property: "og:title", content: "Connexion · Slow Worker" },
+      {
+        property: "og:description",
+        content: "Rejoignez la meute Slow Worker — freelances bilingues FR/EN.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://slow-sloth-finds.lovable.app/auth" },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://slow-sloth-finds.lovable.app/auth" }],
   }),
   component: AuthPage,
 });
+
 
 function AuthPage() {
   const { t } = useTranslation();

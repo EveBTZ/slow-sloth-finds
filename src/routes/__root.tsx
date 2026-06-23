@@ -85,33 +85,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Slow Worker — Le freelance, sans la course" },
-      {
-        name: "description",
-        content:
-          "Slow Worker : la marketplace de freelances calmes et qualifiés. Trouvez le bon profil, au bon rythme.",
-      },
-      { property: "og:title", content: "Slow Worker — Le freelance, sans la course" },
-      {
-        property: "og:description",
-        content: "La marketplace de freelances qui privilégient la qualité à la précipitation.",
-      },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Slow Worker" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Slow Worker — Le freelance, sans la course" },
-      { name: "description", content: "Slow Worker Studio is a bilingual freelance marketplace connecting companies with skilled professionals." },
-      { property: "og:description", content: "Slow Worker Studio is a bilingual freelance marketplace connecting companies with skilled professionals." },
-      { name: "twitter:description", content: "Slow Worker Studio is a bilingual freelance marketplace connecting companies with skilled professionals." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/625be42a-a0cb-4d89-9fcb-13a652f75590/id-preview-2573fab9--8aa2dca0-5e0c-4d2a-a6d9-42d3d25a0955.lovable.app-1782138996212.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/625be42a-a0cb-4d89-9fcb-13a652f75590/id-preview-2573fab9--8aa2dca0-5e0c-4d2a-a6d9-42d3d25a0955.lovable.app-1782138996212.png" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Slow Worker",
+          url: "https://slow-sloth-finds.lovable.app",
+          description:
+            "Marketplace bilingue de freelances calmes et qualifiés. Bilingual marketplace of calm, skilled freelancers.",
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
