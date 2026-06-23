@@ -476,6 +476,8 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
           t(
             extractionSource === "visual" || extractionSource === "images"
               ? "dashboard.portfolio.uploadExtractedVisual"
+              : extractionSource === "reference"
+                ? "dashboard.portfolio.uploadExtractedReference"
               : "dashboard.portfolio.uploadExtracted",
             { count: tags.length }
           )
