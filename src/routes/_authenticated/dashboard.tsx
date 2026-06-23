@@ -415,7 +415,7 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   useEffect(() => {
     let active = true;
     if (profile.portfolio_url) {
-      getSignedFileUrl("portfolios", profile.portfolio_url, 60 * 60).then((u) => {
+      getOwnerSignedFileUrl("portfolios", profile.portfolio_url, 60 * 60).then((u) => {
         if (active) setPortfolioLink(u);
       });
     } else {
