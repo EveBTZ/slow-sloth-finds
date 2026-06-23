@@ -21,7 +21,7 @@ export const en = {
     items: [
       {
         title: "Rich, honest profiles",
-        body: "Every freelancer uploads a PDF portfolio. Our AI extracts skills, tools and sectors automatically.",
+        body: "Every freelancer uploads a PDF skills dossier. Our AI extracts skills, tools and sectors automatically.",
       },
       {
         title: "Real-time availability",
@@ -65,7 +65,7 @@ export const en = {
     back: "Back to list",
     about: "About",
     skills: "Skills & tools",
-    portfolio: "Open portfolio (PDF)",
+    portfolio: "Open skills dossier (PDF)",
     contact: "Contact",
     contactHint: "This freelancer hasn't set a public contact yet.",
     notFound: "Profile not found",
@@ -89,8 +89,9 @@ export const en = {
   },
   dashboard: {
     title: "Freelancer dashboard",
-    subtitle: "Manage your public profile and portfolio.",
-    tabs: { profile: "Profile", portfolio: "Portfolio", preview: "Preview" },
+    subtitle: "Manage your public profile and skills dossier.",
+    tabs: { profile: "Profile", portfolio: "Skills dossier", preview: "Preview" },
+
     save: "Save",
     saved: "Profile saved",
     publish: "Publish profile",
@@ -109,23 +110,24 @@ export const en = {
       avatar: "Avatar (optional)",
     },
     portfolio: {
-      title: "PDF portfolio",
-      subtitle: "Upload your portfolio (8–10 pages). Our AI will extract your skills automatically.",
+      title: "Skills dossier (PDF)",
+      subtitle: "Upload your skills dossier (8–10 pages). Our AI will extract your skills automatically.",
       upload: "Choose a PDF",
       uploading: "Uploading…",
       extracting: "AI analysis in progress… The sloth is working (slowly).",
       currentFile: "Current file:",
       replace: "Replace",
       remove: "Remove",
-      noFile: "No portfolio uploaded yet.",
+      noFile: "No skills dossier uploaded yet.",
       maxSize: "PDF, 10 MB max.",
     },
+
     tags: {
       title: "Your skills",
       subtitle: "Extracted by AI. Click to remove, or add your own.",
       add: "Add a skill",
       placeholder: "e.g. Figma, Branding, SaaS…",
-      empty: "No skills yet. Upload a portfolio to extract them.",
+      empty: "No skills yet. Upload a skills dossier to extract them.",
     },
   },
   footer: { rights: "All rights reserved.", made: "Made slowly ✨" },
