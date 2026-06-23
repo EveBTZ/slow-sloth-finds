@@ -123,9 +123,10 @@ function BrowsePage() {
         <div className="grid gap-8 lg:grid-cols-[14rem_1fr]">
           <aside className="space-y-6">
             <div>
-              <h3 className="mb-3 font-display text-sm font-extrabold uppercase tracking-wider text-secondary">
+              <h2 className="mb-3 font-display text-sm font-extrabold uppercase tracking-wider text-secondary">
                 {t("directory.allTags")}
-              </h3>
+              </h2>
+
               <div className="flex flex-wrap gap-1.5">
                 {allTags.length === 0 && (
                   <span className="text-xs text-muted-foreground">—</span>
