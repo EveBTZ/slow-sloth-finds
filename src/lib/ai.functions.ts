@@ -110,35 +110,44 @@ async function extractTagsFromVisionBlocks(
   sdk: string
 ) {
   const referenceTags = SKILL_REFERENCE_TAGS.slice(0, 140).join(", ");
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Lovable-API-Key": key,
-      "X-Lovable-AIG-SDK": sdk,
-    },
-    body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      temperature: 0.1,
-      max_tokens: 900,
-      messages: [
-        {
-          role: "system",
-          content:
-            `You extract concise professional skill tags from a freelancer skills dossier. Read visual pages, scanned text, and layouts. First identify all visible words, tools, technologies, methods, sectors, and languages, then infer tags from them. Return only a JSON object with a tags array. Tags must be concrete skills, tools, technologies, methodologies, languages, or business sectors. Avoid duplicates and generic words. Prefer these canonical tags when they match the dossier: ${referenceTags}.`,
-        },
-        {
-          role: "user",
-          content: [{ type: "text", text }, ...blocks],
-        },
-      ],
-    }),
-  });
+  console.log(`[ai.functions] vision request sdk=${sdk} blocks=${blocks.length} keyLen=${key.length}`);
+  let response: Response;
+  try {
+    response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Lovable-API-Key": key,
+        "X-Lovable-AIG-SDK": sdk,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        temperature: 0.1,
+        max_tokens: 900,
+        messages: [
+          {
+            role: "system",
+            content:
+              `You extract concise professional skill tags from a freelancer skills dossier. Read visual pages, scanned text, and layouts. First identify all visible words, tools, technologies, methods, sectors, and languages, then infer tags from them. Return only a JSON object with a tags array. Tags must be concrete skills, tools, technologies, methodologies, languages, or business sectors. Avoid duplicates and generic words. Prefer these canonical tags when they match the dossier: ${referenceTags}.`,
+          },
+          {
+            role: "user",
+            content: [{ type: "text", text }, ...blocks],
+          },
+        ],
+      }),
+    });
+  } catch (networkError: any) {
+    console.error(`[ai.functions] network error sdk=${sdk}`, networkError);
+    throw new Error(`Gateway network error (${sdk}): ${networkError?.message ?? "unknown"}`);
+  }
 
   if (!response.ok) {
     const details = await response.text();
-    console.error("Visual tag extraction failed", response.status, details.slice(0, 1200));
-    throw new Error("L'analyse visuelle du dossier a échoué");
+    console.error(`[ai.functions] gateway error sdk=${sdk} status=${response.status}`, details.slice(0, 1200));
+    throw new Error(
+      `Gateway ${response.status} (${sdk}): ${details.slice(0, 280) || response.statusText}`
+    );
   }
 
   const payload = (await response.json()) as {
@@ -146,6 +155,7 @@ async function extractTagsFromVisionBlocks(
   };
   const content = payload.choices?.[0]?.message?.content;
   const messageText = readMessageContent(content);
+  console.log(`[ai.functions] vision ok sdk=${sdk} chars=${messageText.length}`);
 
   const parsedTags = parseTagsJson(messageText);
   const looseTags = parsedTags.length > 0 ? [] : parseLooseTags(messageText);
