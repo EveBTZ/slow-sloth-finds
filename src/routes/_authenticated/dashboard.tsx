@@ -407,8 +407,9 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
           tags = mergeSkillTags([...tags, ...out.tags], 30);
           if (tags.length > 0) extractionSource = "text";
         } catch (e: any) {
-          console.error(e);
+          console.error("[dashboard] extractFn failed", e);
           textExtractionError = e?.message ?? "unknown";
+          toast.error(`Text AI: ${textExtractionError}`);
         }
       }
 
