@@ -176,9 +176,11 @@ export const extractTagsFromText = createServerFn({ method: "POST" })
 
     const truncated = data.text.slice(0, 40_000);
 
+    console.log(`[ai.functions] extractTagsFromText keyLen=${key.length} textLen=${data.text.length} refMatches=${referenceTags.length}`);
+
     try {
       const { experimental_output } = await generateText({
-        model: gateway("google/gemini-3-flash-preview"),
+        model: gateway("google/gemini-2.5-flash"),
         experimental_output: Output.object({
           schema: TagsOutputSchema,
         }),
@@ -188,16 +190,18 @@ export const extractTagsFromText = createServerFn({ method: "POST" })
       });
 
       const tags = mergeSkillTags([...referenceTags, ...normalizeTags(experimental_output.tags)], 30);
+      console.log(`[ai.functions] extractTagsFromText ok tags=${tags.length}`);
 
       return { tags, source: "text" as const };
-    } catch (error) {
+    } catch (error: any) {
+      console.error("[ai.functions] extractTagsFromText AI failed:", error?.message, error?.cause, error);
       if (referenceTags.length > 0) {
-        console.error("AI text tag extraction failed; using reference matches", error);
         return { tags: referenceTags, source: "reference" as const };
       }
-      throw error;
+      throw new Error(`AI text extraction failed: ${error?.message ?? "unknown"}`);
     }
   });
+
 
 export const extractTagsFromPdf = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
