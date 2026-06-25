@@ -80,11 +80,14 @@ export const Route = createFileRoute("/freelancer/$id")({
     };
   },
   component: FreelancerProfilePage,
-  errorComponent: ({ error }) => (
-    <div className="flex min-h-screen items-center justify-center text-center">
-      <p>{error.message}</p>
-    </div>
-  ),
+  errorComponent: ({ error }) => {
+    console.error("Freelancer profile load error:", error);
+    return (
+      <div className="flex min-h-screen items-center justify-center text-center">
+        <p>This profile could not be loaded. Please try again later.</p>
+      </div>
+    );
+  },
   notFoundComponent: () => (
     <div className="flex min-h-screen items-center justify-center">
       <p>Profile not found</p>
