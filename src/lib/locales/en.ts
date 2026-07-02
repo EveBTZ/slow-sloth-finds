@@ -219,6 +219,17 @@ export const en = {
       empty: "No skills yet. Upload a skills dossier to extract them.",
     },
   },
+  pmCatalog: {
+    title: "PM catalogue",
+    subtitle: "Pick a Slow Worker Product Manager to run your Feedback Loop.",
+    back: "← Back to tools",
+    modeAll: "All PMs",
+    modeNoPref: "No preference",
+    noPrefHint: "We show PMs sorted automatically by availability.",
+    book: "Book a call",
+    noCalendly: "Booking link coming soon",
+    empty: "No Product Manager is published yet.",
+  },
   footer: { rights: "All rights reserved.", made: "Made slowly ✨" },
   errors: {
     generic: "Something went wrong.",
