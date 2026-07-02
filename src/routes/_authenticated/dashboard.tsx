@@ -12,6 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { extractKnownSkillTags, mergeSkillTags } from "@/lib/skill-tags";
 import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink, Linkedin } from "lucide-react";
+import { JOB_OPTIONS } from "@/lib/jobs";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Mon espace · Slow Worker" }] }),
