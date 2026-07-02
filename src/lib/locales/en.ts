@@ -131,6 +131,15 @@ export const en = {
       uploadNoTags:
         "Skills dossier uploaded · no skills were extracted automatically. You can add them manually.",
     },
+    linkedin: {
+      title: "Import from LinkedIn",
+      subtitle: "Upload the PDF export of your LinkedIn profile: we'll extract your skills and add them to your profile.",
+      help: "On LinkedIn: \"More\" → \"Save to PDF\". PDF file, 10 MB max.",
+      upload: "Choose my LinkedIn PDF",
+      working: "Analysing your LinkedIn profile…",
+      extracted: "LinkedIn profile analysed · {{count}} skills added",
+      noTags: "No skills detected in the LinkedIn PDF.",
+    },
 
     tags: {
       title: "Your skills",
