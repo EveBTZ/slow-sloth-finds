@@ -38,6 +38,45 @@ export const en = {
     subtitle: "Create your profile in under 2 minutes.",
     button: "Become a Slow Worker",
   },
+  knowWhat: {
+    eyebrow: "For companies",
+    title: "I already know what I need",
+    subtitle: "A ready-made tool or a tailored freelancer — go straight to it.",
+    cta: "Pick my solution →",
+  },
+  solutions: {
+    title: "What are you looking for?",
+    subtitle: "Two ways forward with Slow Worker. At your pace, no detours.",
+    tool: {
+      badge: "Tool",
+      title: "A ready-to-use tool",
+      body: "Solutions built by Slow Worker for your teams. Plug in, use, breathe.",
+      cta: "See tools",
+    },
+    freelance: {
+      badge: "Freelance",
+      title: "One or more freelancers",
+      body: "Access our pack of qualified freelancers. Filter by skill, availability or job.",
+      cta: "Browse directory",
+    },
+    back: "← Back",
+  },
+  tools: {
+    title: "Our tools",
+    subtitle: "Slow Worker products, designed for teams who prefer clarity over noise.",
+    back: "← Back to solutions",
+    items: {
+      feedbackLoop: {
+        name: "Feedback Loop",
+        tagline: "Prioritize product feedback, calmly",
+        description:
+          "Collect, process and prioritize the product feedback raised by everyone in your company. Feedback Loop helps you prioritize on your own.",
+        ctaSelf: "I want Feedback Loop and I'll run it myself",
+        ctaManaged: "I want Feedback Loop and I'd like a Sloworker PM to run it for me",
+        open: "Open the tool ↗",
+      },
+    },
+  },
   directory: {
     title: "Our pack of freelancers",
     subtitle: "Filter by skill, availability, or job. No account required.",
