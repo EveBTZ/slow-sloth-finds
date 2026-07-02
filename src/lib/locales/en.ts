@@ -109,6 +109,22 @@ export const en = {
       currency: "Currency",
       avatar: "Avatar (optional)",
     },
+    jobPicker: {
+      title: "Your job",
+      subtitle: "Pick your job before importing your skills dossier or LinkedIn profile.",
+      placeholder: "Choose a job…",
+      saved: "Job saved",
+      groups: {
+        design: "Design",
+        tech: "Tech & Development",
+        data: "Data & AI",
+        product: "Product & Project",
+        marketing: "Marketing & Growth",
+        content: "Content & Creative",
+        ops: "Business & Ops",
+        other: "Other",
+      },
+    },
     portfolio: {
       title: "Skills dossier (PDF)",
       subtitle: "Upload your skills dossier (8–10 pages). Our AI will extract your skills automatically.",
