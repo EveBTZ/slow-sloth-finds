@@ -133,6 +133,15 @@ export const fr = {
       uploadNoTags:
         "Dossier de compétences uploadé · aucune compétence extraite automatiquement. Vous pouvez les ajouter manuellement.",
     },
+    linkedin: {
+      title: "Importer depuis LinkedIn",
+      subtitle: "Uploadez l'export PDF de votre profil LinkedIn : on en extrait vos compétences et on les ajoute à votre profil.",
+      help: "Sur LinkedIn : « Plus » → « Enregistrer au format PDF ». Fichier PDF, 10 Mo max.",
+      upload: "Choisir mon PDF LinkedIn",
+      working: "Analyse de votre profil LinkedIn en cours…",
+      extracted: "Profil LinkedIn analysé · {{count}} compétences ajoutées",
+      noTags: "Aucune compétence détectée dans le PDF LinkedIn.",
+    },
 
     tags: {
       title: "Vos compétences",
