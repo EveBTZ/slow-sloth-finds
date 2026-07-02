@@ -40,7 +40,7 @@ export const en = {
   },
   directory: {
     title: "Our pack of freelancers",
-    subtitle: "Filter by skill, availability, or specialty. No account required.",
+    subtitle: "Filter by skill, availability, or job. No account required.",
     searchPlaceholder: "Search a name, skill, or tool…",
     filters: "Filters",
     availability: "Availability",
