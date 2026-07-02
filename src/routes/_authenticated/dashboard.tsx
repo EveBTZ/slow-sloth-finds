@@ -32,6 +32,7 @@ interface Profile {
   tags: string[];
   portfolio_url: string | null;
   portfolio_filename: string | null;
+  calendly_url: string | null;
   published: boolean;
 }
 
@@ -213,6 +214,7 @@ function ProfileTab({ profile, onSaved }: { profile: Profile; onSaved: () => voi
         hourly_rate_max: form.hourly_rate_max || null,
         currency: form.currency || "EUR",
         avatar_url: form.avatar_url,
+        calendly_url: form.calendly_url?.trim() || null,
       })
       .eq("id", profile.id);
     setSaving(false);
@@ -296,6 +298,24 @@ function ProfileTab({ profile, onSaved }: { profile: Profile; onSaved: () => voi
           <input type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
         </label>
       </div>
+
+      {form.job_title === "Product Manager" && (
+        <div className="md:col-span-2">
+          <FieldLabel>{t("dashboard.fields.calendly")}</FieldLabel>
+          <input
+            type="url"
+            inputMode="url"
+            placeholder="https://calendly.com/votre-lien"
+            value={form.calendly_url ?? ""}
+            onChange={(e) => setForm({ ...form, calendly_url: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("dashboard.fields.calendlyHint")}
+          </p>
+        </div>
+      )}
+
 
       <div className="flex justify-end md:col-span-2">
         <button

@@ -19,6 +19,7 @@ export type Database = {
           availability: Database["public"]["Enums"]["availability_status"]
           avatar_url: string | null
           bio: string
+          calendly_url: string | null
           created_at: string
           currency: string
           full_name: string
@@ -36,6 +37,7 @@ export type Database = {
           availability?: Database["public"]["Enums"]["availability_status"]
           avatar_url?: string | null
           bio?: string
+          calendly_url?: string | null
           created_at?: string
           currency?: string
           full_name?: string
@@ -53,6 +55,7 @@ export type Database = {
           availability?: Database["public"]["Enums"]["availability_status"]
           avatar_url?: string | null
           bio?: string
+          calendly_url?: string | null
           created_at?: string
           currency?: string
           full_name?: string

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -30,11 +31,13 @@ export const Route = createFileRoute("/tools")({
 
 function ToolsPage() {
   const { t } = useTranslation();
+  const [managedOpen, setManagedOpen] = useState(false);
 
-  const managedSubject = encodeURIComponent(
-    "Feedback Loop — accompagnement par un Sloworker PM",
-  );
-  const selfSubject = encodeURIComponent("Feedback Loop — accès autonome");
+  const options = [
+    { key: "option1", price: 500 },
+    { key: "option2", price: 1000 },
+    { key: "option3", price: 1500 },
+  ] as const;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -89,18 +92,78 @@ function ToolsPage() {
                     >
                       {t("tools.items.feedbackLoop.ctaSelf")}
                     </a>
-                    <a
-                      href={`mailto:${CONTACT_EMAIL}?subject=${managedSubject}`}
-                      className="inline-flex items-center justify-center rounded-2xl border-2 border-brand-violet bg-card px-5 py-4 text-center text-sm font-bold text-brand-violet transition hover:bg-brand-violet hover:text-brand-cream"
+                    <button
+                      type="button"
+                      aria-expanded={managedOpen}
+                      onClick={() => setManagedOpen((o) => !o)}
+                      className={`inline-flex items-center justify-center rounded-2xl border-2 border-brand-violet px-5 py-4 text-center text-sm font-bold transition ${
+                        managedOpen
+                          ? "bg-brand-violet text-brand-cream"
+                          : "bg-card text-brand-violet hover:bg-brand-violet hover:text-brand-cream"
+                      }`}
                     >
                       {t("tools.items.feedbackLoop.ctaManaged")}
-                    </a>
-                    {/* keep selfSubject referenced for future email flow */}
-                    <span className="hidden" data-subject={selfSubject} />
+                    </button>
                   </div>
+
+                  {managedOpen && (
+                    <div className="mt-2 rounded-3xl border-2 border-brand-violet/30 bg-brand-cream/60 p-6 md:p-8">
+                      <h3 className="font-display text-xl font-black text-secondary">
+                        {t("tools.items.feedbackLoop.managed.title")}
+                      </h3>
+                      <p className="mt-1 text-sm text-foreground/70">
+                        {t("tools.items.feedbackLoop.managed.subtitle")}
+                      </p>
+
+                      <div className="mt-6 grid gap-4 md:grid-cols-2">
+                        {options.map((opt) => {
+                          const name = t(`tools.items.feedbackLoop.managed.${opt.key}`);
+                          const subject = encodeURIComponent(
+                            t("tools.items.feedbackLoop.managed.mailSubject", { name }),
+                          );
+                          return (
+                            <div
+                              key={opt.key}
+                              className="flex flex-col gap-3 rounded-2xl border-2 border-border bg-card p-5 shadow-soft"
+                            >
+                              <p className="text-sm font-semibold text-foreground/85">{name}</p>
+                              <p className="font-display text-2xl font-black text-brand-violet">
+                                {opt.price} €
+                                <span className="ml-1 text-sm font-bold text-foreground/60">
+                                  {t("tools.items.feedbackLoop.managed.perWeek")}
+                                </span>
+                              </p>
+                              <a
+                                href={`mailto:${CONTACT_EMAIL}?subject=${subject}`}
+                                className="mt-auto inline-flex items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition hover:-translate-y-0.5"
+                              >
+                                {t("tools.items.feedbackLoop.managed.choose")}
+                              </a>
+                            </div>
+                          );
+                        })}
+
+                        <div className="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-brand-violet/50 bg-card p-5">
+                          <p className="text-sm font-semibold text-foreground/85">
+                            {t("tools.items.feedbackLoop.managed.discuss")}
+                          </p>
+                          <p className="font-display text-2xl font-black text-brand-violet/70">
+                            —
+                          </p>
+                          <Link
+                            to="/pm-catalog"
+                            className="mt-auto inline-flex items-center justify-center rounded-full border-2 border-brand-violet bg-card px-4 py-2.5 text-sm font-bold text-brand-violet transition hover:bg-brand-violet hover:text-brand-cream"
+                          >
+                            {t("tools.items.feedbackLoop.managed.discussCta")}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </article>
             </div>
+
 
             <div className="mt-10 text-center">
               <Link
