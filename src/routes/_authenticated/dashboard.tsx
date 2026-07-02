@@ -11,7 +11,7 @@ import { extractTagsFromImages, extractTagsFromPdf, extractTagsFromText } from "
 import { useServerFn } from "@tanstack/react-start";
 import { getOwnerSignedFileUrl } from "@/lib/storage";
 import { extractKnownSkillTags, mergeSkillTags } from "@/lib/skill-tags";
-import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink } from "lucide-react";
+import { Upload, FileText, Trash2, X, Plus, Eye, ExternalLink, Linkedin } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Mon espace · Slow Worker" }] }),
@@ -347,14 +347,111 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [linkedinBusy, setLinkedinBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const linkedinRef = useRef<HTMLInputElement>(null);
   const extractFn = useServerFn(extractTagsFromText);
   const extractPdfFn = useServerFn(extractTagsFromPdf);
   const extractImagesFn = useServerFn(extractTagsFromImages);
   const [newTag, setNewTag] = useState("");
 
+  async function extractTagsFromPdfFile(file: File): Promise<string[]> {
+    const arrayBuffer = await file.arrayBuffer();
+    let cleaned = "";
+    let textError: string | null = null;
+    try {
+      const { extractText, getDocumentProxy } = await import("unpdf");
+      const pdf = await getDocumentProxy(new Uint8Array(arrayBuffer));
+      const { text } = await extractText(pdf, { mergePages: true });
+      cleaned = (Array.isArray(text) ? text.join("\n") : text).trim();
+    } catch (error: any) {
+      console.error(error);
+      textError = error?.message ?? "unknown";
+    }
+
+    let tags: string[] = cleaned.length > 0 ? extractKnownSkillTags(cleaned) : [];
+
+    if (cleaned.length > 50) {
+      try {
+        const out = await extractFn({ data: { text: cleaned.slice(0, 80_000) } });
+        tags = mergeSkillTags([...tags, ...out.tags], 30);
+      } catch (e: any) {
+        console.error(e);
+        textError = e?.message ?? "unknown";
+      }
+    }
+
+    if (tags.length === 0) {
+      try {
+        const out = await extractPdfFn({
+          data: {
+            filename: file.name,
+            fileData: `data:application/pdf;base64,${arrayBufferToBase64(arrayBuffer)}`,
+          },
+        });
+        tags = out.tags;
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+
+    if (tags.length === 0) {
+      try {
+        const images = await renderPdfPagesAsImages(arrayBuffer);
+        if (images.length > 0) {
+          const out = await extractImagesFn({
+            data: { filename: file.name, images },
+          });
+          tags = out.tags;
+        }
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+
+    if (tags.length === 0 && textError) {
+      throw new Error(textError);
+    }
+    return tags;
+  }
+
+  async function handleLinkedin(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      toast.error(t("errors.notPdf"));
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t("errors.pdfTooLarge"));
+      return;
+    }
+    setLinkedinBusy(true);
+    try {
+      const tags = await extractTagsFromPdfFile(file);
+      if (tags.length === 0) {
+        toast.warning(t("dashboard.linkedin.noTags"));
+      } else {
+        const merged = Array.from(new Set([...(profile.tags ?? []), ...tags]));
+        const { error } = await supabase
+          .from("freelancer_profiles")
+          .update({ tags: merged })
+          .eq("id", profile.id);
+        if (error) throw error;
+        toast.success(t("dashboard.linkedin.extracted", { count: tags.length }));
+        onChange();
+      }
+    } catch (err: any) {
+      toast.error(err?.message ?? t("errors.generic"));
+    } finally {
+      setLinkedinBusy(false);
+      if (linkedinRef.current) linkedinRef.current.value = "";
+    }
+  }
+
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
+
     if (!file) return;
     if (file.type !== "application/pdf") {
       toast.error(t("errors.notPdf"));
@@ -607,6 +704,39 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
           </div>
         )}
       </div>
+
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+        <h2 className="flex items-center gap-2 font-display text-xl font-extrabold text-secondary">
+          <Linkedin className="size-5 text-brand-orange" />
+          {t("dashboard.linkedin.title")}
+        </h2>
+        <p className="mt-1 text-sm text-foreground/70">{t("dashboard.linkedin.subtitle")}</p>
+        <div className="mt-5 rounded-2xl border-2 border-dashed border-border p-6 text-center">
+          <p className="text-xs text-muted-foreground">{t("dashboard.linkedin.help")}</p>
+          <button
+            type="button"
+            onClick={() => linkedinRef.current?.click()}
+            disabled={linkedinBusy}
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-sm font-bold text-secondary-foreground hover:-translate-y-0.5 disabled:opacity-50"
+          >
+            <Upload className="size-4" /> {t("dashboard.linkedin.upload")}
+          </button>
+        </div>
+        <input
+          ref={linkedinRef}
+          type="file"
+          accept="application/pdf"
+          className="hidden"
+          onChange={handleLinkedin}
+        />
+        {linkedinBusy && (
+          <div className="mt-4 rounded-2xl bg-brand-yellow/20 p-3 text-sm font-bold text-secondary">
+            {t("dashboard.linkedin.working")}
+          </div>
+        )}
+      </div>
+
+
 
       <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
         <h2 className="font-display text-xl font-extrabold text-secondary">
