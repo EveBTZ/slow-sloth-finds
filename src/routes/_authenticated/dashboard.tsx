@@ -214,6 +214,7 @@ function ProfileTab({ profile, onSaved }: { profile: Profile; onSaved: () => voi
         hourly_rate_max: form.hourly_rate_max || null,
         currency: form.currency || "EUR",
         avatar_url: form.avatar_url,
+        calendly_url: form.calendly_url?.trim() || null,
       })
       .eq("id", profile.id);
     setSaving(false);
