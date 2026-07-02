@@ -449,7 +449,9 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
     }
   }
 
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
+
     if (!file) return;
     if (file.type !== "application/pdf") {
       toast.error(t("errors.notPdf"));
