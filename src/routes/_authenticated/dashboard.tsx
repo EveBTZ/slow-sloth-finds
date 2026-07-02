@@ -642,6 +642,8 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
 
   return (
     <div className="space-y-6">
+      <JobPickerCard profile={profile} onChange={onChange} />
+
       <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
         <h2 className="font-display text-xl font-extrabold text-secondary">
           {t("dashboard.portfolio.title")}
