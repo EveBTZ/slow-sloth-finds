@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { zodValidator } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AvailabilityBadge, type Availability } from "@/components/AvailabilityBadge";
@@ -18,7 +20,12 @@ interface PMProfile {
   calendly_url: string | null;
 }
 
+const pmCatalogSearchSchema = z.object({
+  formula: z.coerce.number().optional(),
+});
+
 export const Route = createFileRoute("/pm-catalog")({
+  validateSearch: zodValidator(pmCatalogSearchSchema),
   head: () => ({
     meta: [
       { title: "Catalogue des PM · Slow Worker" },
@@ -48,6 +55,7 @@ const AVAILABILITY_ORDER: Record<Availability, number> = {
 
 function PMCatalogPage() {
   const { t } = useTranslation();
+  const { formula } = Route.useSearch();
   const [data, setData] = useState<PMProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"all" | "noPref">("all");
@@ -94,6 +102,14 @@ function PMCatalogPage() {
               </h1>
               <p className="mt-4 text-lg text-foreground/75">{t("pmCatalog.subtitle")}</p>
             </div>
+
+            {formula && (
+              <div className="mx-auto mt-6 max-w-xl rounded-2xl border-2 border-brand-orange/30 bg-brand-cream/70 p-4 text-center shadow-soft">
+                <p className="text-sm font-bold text-secondary">
+                  {t("pmCatalog.formulaContext", { price: formula })}
+                </p>
+              </div>
+            )}
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
               {(["all", "noPref"] as const).map((k) => (
