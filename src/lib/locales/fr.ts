@@ -40,7 +40,7 @@ export const fr = {
   },
   directory: {
     title: "Notre meute de freelances",
-    subtitle: "Filtrez par compétence, dispo ou spécialité. Aucun compte requis.",
+    subtitle: "Filtrez par compétence, dispo ou métier. Aucun compte requis.",
     searchPlaceholder: "Rechercher un nom, une compétence, un outil…",
     filters: "Filtres",
     availability: "Disponibilité",
