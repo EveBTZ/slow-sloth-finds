@@ -299,22 +299,20 @@ function ProfileTab({ profile, onSaved }: { profile: Profile; onSaved: () => voi
         </label>
       </div>
 
-      {form.job_title === "Product Manager" && (
-        <div className="md:col-span-2">
-          <FieldLabel>{t("dashboard.fields.calendly")}</FieldLabel>
-          <input
-            type="url"
-            inputMode="url"
-            placeholder="https://calendly.com/votre-lien"
-            value={form.calendly_url ?? ""}
-            onChange={(e) => setForm({ ...form, calendly_url: e.target.value })}
-            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
-          />
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("dashboard.fields.calendlyHint")}
-          </p>
-        </div>
-      )}
+      <div className="md:col-span-2">
+        <FieldLabel>{t("dashboard.fields.calendly")}</FieldLabel>
+        <input
+          type="url"
+          inputMode="url"
+          placeholder="https://calendly.com/votre-lien"
+          value={form.calendly_url ?? ""}
+          onChange={(e) => setForm({ ...form, calendly_url: e.target.value })}
+          className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+        />
+        <p className="mt-1 text-xs text-muted-foreground">
+          {t("dashboard.fields.calendlyHint")}
+        </p>
+      </div>
 
 
       <div className="flex justify-end md:col-span-2">
