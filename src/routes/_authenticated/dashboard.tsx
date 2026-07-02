@@ -32,6 +32,7 @@ interface Profile {
   tags: string[];
   portfolio_url: string | null;
   portfolio_filename: string | null;
+  calendly_url: string | null;
   published: boolean;
 }
 
