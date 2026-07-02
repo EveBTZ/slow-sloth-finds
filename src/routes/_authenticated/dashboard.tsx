@@ -706,6 +706,39 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
       </div>
 
       <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+        <h2 className="flex items-center gap-2 font-display text-xl font-extrabold text-secondary">
+          <Linkedin className="size-5 text-brand-orange" />
+          {t("dashboard.linkedin.title")}
+        </h2>
+        <p className="mt-1 text-sm text-foreground/70">{t("dashboard.linkedin.subtitle")}</p>
+        <div className="mt-5 rounded-2xl border-2 border-dashed border-border p-6 text-center">
+          <p className="text-xs text-muted-foreground">{t("dashboard.linkedin.help")}</p>
+          <button
+            type="button"
+            onClick={() => linkedinRef.current?.click()}
+            disabled={linkedinBusy}
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-sm font-bold text-secondary-foreground hover:-translate-y-0.5 disabled:opacity-50"
+          >
+            <Upload className="size-4" /> {t("dashboard.linkedin.upload")}
+          </button>
+        </div>
+        <input
+          ref={linkedinRef}
+          type="file"
+          accept="application/pdf"
+          className="hidden"
+          onChange={handleLinkedin}
+        />
+        {linkedinBusy && (
+          <div className="mt-4 rounded-2xl bg-brand-yellow/20 p-3 text-sm font-bold text-secondary">
+            {t("dashboard.linkedin.working")}
+          </div>
+        )}
+      </div>
+
+
+
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
         <h2 className="font-display text-xl font-extrabold text-secondary">
           {t("dashboard.tags.title")}
         </h2>
