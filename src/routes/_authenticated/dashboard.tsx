@@ -102,7 +102,6 @@ function DashboardPage() {
             >
               {profile.published ? "● " + t("dashboard.published") : t("dashboard.draft")}
             </span>
-            <PublishButton profile={profile} onChange={refresh} />
             {profile.published && (
               <Link
                 to="/freelancer/$id"
@@ -136,6 +135,10 @@ function DashboardPage() {
           {tab === "profile" && <ProfileTab profile={profile} onSaved={refresh} />}
           {tab === "portfolio" && <PortfolioTab profile={profile} onChange={refresh} />}
           {tab === "preview" && <PreviewTab profile={profile} />}
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <PublishButton profile={profile} onChange={refresh} />
         </div>
       </main>
       <Footer />
