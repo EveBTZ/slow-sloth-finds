@@ -160,8 +160,8 @@ export const en = {
       rateMax: "Max rate (€/h)",
       currency: "Currency",
       avatar: "Avatar (optional)",
-      calendly: "Calendly link (PM)",
-      calendlyHint: "Visible for Product Managers only. Used on the PM catalogue for booking.",
+      calendly: "Calendly link",
+      calendlyHint: "Shown on your public profile so companies can book a call with you directly.",
     },
     jobPicker: {
       title: "Your job",
