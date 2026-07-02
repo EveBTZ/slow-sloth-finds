@@ -85,7 +85,6 @@ export const en = {
           option3: "Sending prioritised requests, updating the roadmap and the backlog",
           discuss: "I need to talk it through with a PM",
           discussCta: "See the PM catalogue →",
-          mailSubject: "Feedback Loop — plan: {{name}}",
         },
       },
     },
@@ -229,6 +228,7 @@ export const en = {
     book: "Book a call",
     noCalendly: "Booking link coming soon",
     empty: "No Product Manager is published yet.",
+    formulaContext: "You chose the {{price}} €/week plan. Pick a PM to book a call.",
   },
   footer: { rights: "All rights reserved.", made: "Made slowly ✨" },
   errors: {

@@ -88,7 +88,6 @@ export const fr = {
           option3: "Envoi des demandes priorisées, mise à jour de la roadmap et du backlog",
           discuss: "J'ai besoin d'en discuter avec un·e PM",
           discussCta: "Voir le catalogue des PM →",
-          mailSubject: "Feedback Loop — formule : {{name}}",
         },
       },
     },
@@ -234,6 +233,7 @@ export const fr = {
     book: "Je prends rendez-vous",
     noCalendly: "Lien de prise de rendez-vous bientôt disponible",
     empty: "Aucun Product Manager n'est publié pour le moment.",
+    formulaContext: "Vous avez choisi la formule à {{price}} €/semaine. Sélectionnez un PM pour prendre rendez-vous.",
   },
   footer: { rights: "Tous droits réservés.", made: "Fait avec lenteur ✨" },
   errors: {

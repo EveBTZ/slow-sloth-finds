@@ -5,7 +5,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 const FEEDBACK_LOOP_URL = "https://toolsandskills.lovable.app";
-const CONTACT_EMAIL = "hello@slowworker.app";
 
 export const Route = createFileRoute("/tools")({
   head: () => ({
@@ -118,9 +117,6 @@ function ToolsPage() {
                       <div className="mt-6 grid gap-4 md:grid-cols-2">
                         {options.map((opt) => {
                           const name = t(`tools.items.feedbackLoop.managed.${opt.key}`);
-                          const subject = encodeURIComponent(
-                            t("tools.items.feedbackLoop.managed.mailSubject", { name }),
-                          );
                           return (
                             <div
                               key={opt.key}
@@ -133,12 +129,13 @@ function ToolsPage() {
                                   {t("tools.items.feedbackLoop.managed.perWeek")}
                                 </span>
                               </p>
-                              <a
-                                href={`mailto:${CONTACT_EMAIL}?subject=${subject}`}
+                              <Link
+                                to="/pm-catalog"
+                                search={{ formula: opt.price }}
                                 className="mt-auto inline-flex items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition hover:-translate-y-0.5"
                               >
                                 {t("tools.items.feedbackLoop.managed.choose")}
-                              </a>
+                              </Link>
                             </div>
                           );
                         })}
