@@ -224,6 +224,17 @@ export const fr = {
       empty: "Aucune compétence pour l'instant. Uploadez un dossier de compétences pour les extraire.",
     },
   },
+  pmCatalog: {
+    title: "Catalogue des PM",
+    subtitle: "Choisissez un Product Manager Sloworker pour prendre en main votre Feedback Loop.",
+    back: "← Retour aux outils",
+    modeAll: "Tous les PM",
+    modeNoPref: "Je n'ai pas de préférence",
+    noPrefHint: "Nous vous proposons les PM triés automatiquement par disponibilité.",
+    book: "Je prends rendez-vous",
+    noCalendly: "Lien de prise de rendez-vous bientôt disponible",
+    empty: "Aucun Product Manager n'est publié pour le moment.",
+  },
   footer: { rights: "Tous droits réservés.", made: "Fait avec lenteur ✨" },
   errors: {
     generic: "Une erreur est survenue.",
