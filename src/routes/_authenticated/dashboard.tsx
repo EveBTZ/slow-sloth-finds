@@ -347,13 +347,108 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [linkedinBusy, setLinkedinBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const linkedinRef = useRef<HTMLInputElement>(null);
   const extractFn = useServerFn(extractTagsFromText);
   const extractPdfFn = useServerFn(extractTagsFromPdf);
   const extractImagesFn = useServerFn(extractTagsFromImages);
   const [newTag, setNewTag] = useState("");
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function extractTagsFromPdfFile(file: File): Promise<string[]> {
+    const arrayBuffer = await file.arrayBuffer();
+    let cleaned = "";
+    let textError: string | null = null;
+    try {
+      const { extractText, getDocumentProxy } = await import("unpdf");
+      const pdf = await getDocumentProxy(new Uint8Array(arrayBuffer));
+      const { text } = await extractText(pdf, { mergePages: true });
+      cleaned = (Array.isArray(text) ? text.join("\n") : text).trim();
+    } catch (error: any) {
+      console.error(error);
+      textError = error?.message ?? "unknown";
+    }
+
+    let tags: string[] = cleaned.length > 0 ? extractKnownSkillTags(cleaned) : [];
+
+    if (cleaned.length > 50) {
+      try {
+        const out = await extractFn({ data: { text: cleaned.slice(0, 80_000) } });
+        tags = mergeSkillTags([...tags, ...out.tags], 30);
+      } catch (e: any) {
+        console.error(e);
+        textError = e?.message ?? "unknown";
+      }
+    }
+
+    if (tags.length === 0) {
+      try {
+        const out = await extractPdfFn({
+          data: {
+            filename: file.name,
+            fileData: `data:application/pdf;base64,${arrayBufferToBase64(arrayBuffer)}`,
+          },
+        });
+        tags = out.tags;
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+
+    if (tags.length === 0) {
+      try {
+        const images = await renderPdfPagesAsImages(arrayBuffer);
+        if (images.length > 0) {
+          const out = await extractImagesFn({
+            data: { filename: file.name, images },
+          });
+          tags = out.tags;
+        }
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+
+    if (tags.length === 0 && textError) {
+      throw new Error(textError);
+    }
+    return tags;
+  }
+
+  async function handleLinkedin(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      toast.error(t("errors.notPdf"));
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t("errors.pdfTooLarge"));
+      return;
+    }
+    setLinkedinBusy(true);
+    try {
+      const tags = await extractTagsFromPdfFile(file);
+      if (tags.length === 0) {
+        toast.warning(t("dashboard.linkedin.noTags"));
+      } else {
+        const merged = Array.from(new Set([...(profile.tags ?? []), ...tags]));
+        const { error } = await supabase
+          .from("freelancer_profiles")
+          .update({ tags: merged })
+          .eq("id", profile.id);
+        if (error) throw error;
+        toast.success(t("dashboard.linkedin.extracted", { count: tags.length }));
+        onChange();
+      }
+    } catch (err: any) {
+      toast.error(err?.message ?? t("errors.generic"));
+    } finally {
+      setLinkedinBusy(false);
+      if (linkedinRef.current) linkedinRef.current.value = "";
+    }
+  }
+
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.type !== "application/pdf") {
