@@ -78,6 +78,18 @@ export const fr = {
         ctaManaged:
           "Je veux la Feedback Loop et je souhaite qu'un Sloworker PM la gère pour moi",
         open: "Ouvrir l'outil ↗",
+        managed: {
+          title: "La prestation comprend 1 à 3 jours par semaine de gestion de la Feedback Loop",
+          subtitle: "Choisissez la formule qui correspond à vos besoins.",
+          perWeek: "/semaine",
+          choose: "Choisir cette formule",
+          option1: "Envoi des demandes priorisées à votre équipe Product",
+          option2: "Envoi des demandes priorisées et mise à jour de la roadmap",
+          option3: "Envoi des demandes priorisées, mise à jour de la roadmap et du backlog",
+          discuss: "J'ai besoin d'en discuter avec un·e PM",
+          discussCta: "Voir le catalogue des PM →",
+          mailSubject: "Feedback Loop — formule : {{name}}",
+        },
       },
     },
   },
