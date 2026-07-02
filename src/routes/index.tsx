@@ -110,6 +110,30 @@ function Index() {
           </div>
         </section>
 
+        {/* Know-what entry point (for companies) */}
+        <section className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+          <Link
+            to="/solutions"
+            className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-[2rem] border-2 border-secondary bg-card p-8 shadow-soft transition hover:-translate-y-0.5 hover:shadow-pop md:flex-row md:items-center md:justify-between md:p-10"
+          >
+            <div className="absolute -right-10 -top-10 size-48 rounded-full bg-brand-yellow/40 blur-3xl transition group-hover:bg-brand-orange/30" />
+            <div className="relative">
+              <span className="inline-flex items-center rounded-full bg-secondary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary">
+                {t("knowWhat.eyebrow")}
+              </span>
+              <h2 className="mt-3 font-display text-2xl font-black text-secondary sm:text-3xl">
+                {t("knowWhat.title")}
+              </h2>
+              <p className="mt-2 max-w-xl text-foreground/70">
+                {t("knowWhat.subtitle")}
+              </p>
+            </div>
+            <span className="relative inline-flex shrink-0 items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-soft transition group-hover:-translate-y-0.5">
+              {t("knowWhat.cta")}
+            </span>
+          </Link>
+        </section>
+
         {/* Features */}
         <section className="border-y border-border/60 bg-card/50">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

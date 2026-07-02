@@ -38,6 +38,48 @@ export const fr = {
     subtitle: "Créez votre profil en moins de 2 minutes.",
     button: "Devenir freelance Slow Worker",
   },
+  knowWhat: {
+    eyebrow: "Côté entreprises",
+    title: "Je sais déjà ce dont j'ai besoin",
+    subtitle:
+      "Un outil clé en main ou un freelance sur-mesure : allez droit au but.",
+    cta: "Choisir ma solution →",
+  },
+  solutions: {
+    title: "Que cherchez-vous ?",
+    subtitle:
+      "Deux façons d'avancer avec Slow Worker. À votre rythme, sans détour.",
+    tool: {
+      badge: "Outil",
+      title: "Un outil prêt à l'emploi",
+      body: "Des solutions produites par Slow Worker pour vos équipes. Installez, utilisez, respirez.",
+      cta: "Voir les outils",
+    },
+    freelance: {
+      badge: "Freelance",
+      title: "Un ou plusieurs freelances",
+      body: "Accédez à notre meute de freelances qualifiés. Filtrez par compétence, dispo ou métier.",
+      cta: "Parcourir l'annuaire",
+    },
+    back: "← Retour",
+  },
+  tools: {
+    title: "Nos outils",
+    subtitle: "Des produits Slow Worker, pensés pour les équipes qui préfèrent la clarté au bruit.",
+    back: "← Retour aux solutions",
+    items: {
+      feedbackLoop: {
+        name: "Feedback Loop",
+        tagline: "Priorisez sereinement les remontées produit",
+        description:
+          "Collecte, traitement et priorisation des remontées produit émises par tous les collaborateurs de votre entreprise. La Feedback Loop vous aide à prioriser les remontées en autonomie.",
+        ctaSelf: "Je veux la Feedback Loop et je la gère en autonomie",
+        ctaManaged:
+          "Je veux la Feedback Loop et je souhaite qu'un Sloworker PM la gère pour moi",
+        open: "Ouvrir l'outil ↗",
+      },
+    },
+  },
   directory: {
     title: "Notre meute de freelances",
     subtitle: "Filtrez par compétence, dispo ou métier. Aucun compte requis.",
