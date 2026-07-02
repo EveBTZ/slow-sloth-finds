@@ -163,6 +163,8 @@ export const fr = {
       rateMax: "Taux max (€/h)",
       currency: "Devise",
       avatar: "Avatar (optionnel)",
+      calendly: "Lien Calendly (PM)",
+      calendlyHint: "Visible uniquement pour les Product Managers. Utilisé dans le catalogue PM pour la prise de rendez-vous.",
     },
     jobPicker: {
       title: "Votre métier",
