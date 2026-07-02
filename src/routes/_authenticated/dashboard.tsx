@@ -789,6 +789,65 @@ function PortfolioTab({ profile, onChange }: { profile: Profile; onChange: () =>
   );
 }
 
+function JobPickerCard({ profile, onChange }: { profile: Profile; onChange: () => void }) {
+  const { t, i18n } = useTranslation();
+  const [saving, setSaving] = useState(false);
+  const lang = i18n.language || "fr";
+  const isFr = lang.startsWith("fr");
+
+  const currentValue =
+    JOB_OPTIONS.find(
+      (j) => j.label_fr === profile.job_title || j.label_en === profile.job_title,
+    )?.value ?? "";
+
+  const groups = Array.from(new Set(JOB_OPTIONS.map((j) => j.group)));
+
+  async function handleSelect(value: string) {
+    const job = JOB_OPTIONS.find((j) => j.value === value);
+    if (!job) return;
+    const label = isFr ? job.label_fr : job.label_en;
+    setSaving(true);
+    const { error } = await supabase
+      .from("freelancer_profiles")
+      .update({ job_title: label })
+      .eq("id", profile.id);
+    setSaving(false);
+    if (error) toast.error(error.message);
+    else {
+      toast.success(t("dashboard.jobPicker.saved"));
+      onChange();
+    }
+  }
+
+  return (
+    <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+      <h2 className="font-display text-xl font-extrabold text-secondary">
+        {t("dashboard.jobPicker.title")}
+      </h2>
+      <p className="mt-1 text-sm text-foreground/70">{t("dashboard.jobPicker.subtitle")}</p>
+      <select
+        value={currentValue}
+        disabled={saving}
+        onChange={(e) => handleSelect(e.target.value)}
+        className="mt-4 w-full max-w-md rounded-2xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground outline-none focus:border-primary disabled:opacity-50"
+      >
+        <option value="" disabled>
+          {t("dashboard.jobPicker.placeholder")}
+        </option>
+        {groups.map((g) => (
+          <optgroup key={g} label={t(`dashboard.jobPicker.groups.${g}`)}>
+            {JOB_OPTIONS.filter((j) => j.group === g).map((j) => (
+              <option key={j.value} value={j.value}>
+                {isFr ? j.label_fr : j.label_en}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function PreviewTab({ profile }: { profile: Profile }) {
   return (
     <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
