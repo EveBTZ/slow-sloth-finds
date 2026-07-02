@@ -2,6 +2,7 @@ export const fr = {
   brand: { name: "Slow Worker", tagline: "Le freelance, sans la course." },
   nav: {
     browse: "Trouver un freelance",
+    diagnostic: "J'ai fait mon diagnostic",
     forFreelancers: "Je suis freelance",
     dashboard: "Mon espace",
     signIn: "Connexion",

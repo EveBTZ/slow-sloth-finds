@@ -15,6 +15,7 @@ export function Header() {
         <Logo />
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink to="/browse">{t("nav.browse")}</NavLink>
+          <NavLink to="/solutions">{t("nav.diagnostic")}</NavLink>
           {!user && <NavLink to="/auth">{t("nav.forFreelancers")}</NavLink>}
           {user && <NavLink to="/dashboard">{t("nav.dashboard")}</NavLink>}
         </nav>
