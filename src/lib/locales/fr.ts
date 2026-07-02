@@ -109,6 +109,22 @@ export const fr = {
       currency: "Devise",
       avatar: "Avatar (optionnel)",
     },
+    jobPicker: {
+      title: "Votre métier",
+      subtitle: "Sélectionnez votre métier avant d'importer votre dossier ou votre profil LinkedIn.",
+      placeholder: "Choisissez un métier…",
+      saved: "Métier enregistré",
+      groups: {
+        design: "Design",
+        tech: "Tech & Développement",
+        data: "Data & IA",
+        product: "Produit & Projet",
+        marketing: "Marketing & Growth",
+        content: "Contenu & Création",
+        ops: "Business & Ops",
+        other: "Autre",
+      },
+    },
     portfolio: {
       title: "Dossier de compétences (PDF)",
       subtitle: "Uploadez votre dossier de compétences (8–10 pages). Notre IA extraira vos compétences automatiquement.",
